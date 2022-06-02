@@ -2,7 +2,7 @@
   "name": "quadtree-ts",
   "version": "1.0.0",
   "description": "A simple quad tree implementation in TypeScript",
-  "main": "dist/index.js",
+  "main": "dist/main/index.js",
   "scripts": {
     "format": "prettier --write 'src/**/*.ts'",
     "clean": "rimraf dist",

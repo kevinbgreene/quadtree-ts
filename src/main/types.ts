@@ -10,7 +10,14 @@ export type Size = Readonly<{
   height: number;
 }>;
 
-export type Quadrant = Readonly<{
+// A rectangle where location is top left corner
+export type Box = Readonly<{
   location: Point;
   size: Size;
+}>;
+
+// Location is the center of the circle
+export type Circle = Readonly<{
+  location: Point;
+  radius: number;
 }>;

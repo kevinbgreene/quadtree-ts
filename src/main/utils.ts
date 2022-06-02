@@ -1,6 +1,6 @@
-import { Point, Quadrant } from "./types";
+import { Point, Box } from "./types";
 
-export function contains(q: Quadrant, p: Point): boolean {
+export function contains(q: Box, p: Point): boolean {
   const qX = q.location.x;
   const qY = q.location.y;
   const qWidth = q.size.width;
@@ -14,7 +14,7 @@ export function contains(q: Quadrant, p: Point): boolean {
   );
 }
 
-export function intersects(q1: Quadrant, q2: Quadrant): boolean {
+export function intersects(q1: Box, q2: Box): boolean {
   const l1: Point = {
     x: q1.location.x - q1.size.width,
     y: q1.location.y - q1.size.height,
@@ -46,7 +46,7 @@ export function intersects(q1: Quadrant, q2: Quadrant): boolean {
 }
 
 // check if q1 fully contains q2
-export function doesFullyContain(q1: Quadrant, q2: Quadrant): boolean {
+export function doesFullyContain(q1: Box, q2: Box): boolean {
   const l1: Point = {
     x: q1.location.x - q1.size.width,
     y: q1.location.y - q1.size.height,
