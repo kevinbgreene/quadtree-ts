@@ -16,8 +16,28 @@ export type Box = Readonly<{
   size: Size;
 }>;
 
-// Location is the center of the circle
+// A circle where location is the center
 export type Circle = Readonly<{
   location: Point;
   radius: number;
 }>;
+
+// In the future query could support various shapes.
+export type Shape = Box;
+
+export interface IQuadTree<T> {
+  add(...items: ReadonlyArray<Unit<T>>): void;
+  query(shape?: Shape): ReadonlyArray<Unit<T>>;
+  contains(point: Point): boolean;
+}
+
+export type Children<T> =
+  | Readonly<{
+      type: 'leaves';
+      items: Array<Unit<T>>;
+    }>
+  | Readonly<{
+      type: 'nodes';
+      // Clockwise: topLeft, topRight, bottomRight, bottomLeft
+      nodes: [IQuadTree<T>, IQuadTree<T>, IQuadTree<T>, IQuadTree<T>];
+    }>;

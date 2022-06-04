@@ -1,4 +1,4 @@
-import { Point, Box } from "./types";
+import { Point, Box } from './types';
 
 export function contains(q: Box, p: Point): boolean {
   const qX = q.location.x;
@@ -6,27 +6,17 @@ export function contains(q: Box, p: Point): boolean {
   const qWidth = q.size.width;
   const qHeight = q.size.height;
 
-  return (
-    p.x > qX - qWidth &&
-    p.x < qX + qWidth &&
-    p.y > qY - qHeight &&
-    p.y < qY + qHeight
-  );
+  return p.x >= qX && p.x <= qX + qWidth && p.y >= qY && p.y <= qY + qHeight;
 }
 
 export function intersects(q1: Box, q2: Box): boolean {
-  const l1: Point = {
-    x: q1.location.x - q1.size.width,
-    y: q1.location.y - q1.size.height,
-  };
+  const l1: Point = q1.location;
   const r1: Point = {
     x: q1.location.x + q1.size.width,
     y: q1.location.y + q1.size.height,
   };
-  const l2: Point = {
-    x: q2.location.x - q2.size.width,
-    y: q2.location.y - q2.size.height,
-  };
+
+  const l2: Point = q2.location;
   const r2: Point = {
     x: q2.location.x + q2.size.width,
     y: q2.location.y + q2.size.height,
@@ -47,22 +37,17 @@ export function intersects(q1: Box, q2: Box): boolean {
 
 // check if q1 fully contains q2
 export function doesFullyContain(q1: Box, q2: Box): boolean {
-  const l1: Point = {
-    x: q1.location.x - q1.size.width,
-    y: q1.location.y - q1.size.height,
-  };
+  const l1: Point = q1.location;
   const r1: Point = {
     x: q1.location.x + q1.size.width,
     y: q1.location.y + q1.size.height,
   };
-  const l2: Point = {
-    x: q2.location.x - q2.size.width,
-    y: q2.location.y - q2.size.height,
-  };
+
+  const l2: Point = q2.location;
   const r2: Point = {
     x: q2.location.x + q2.size.width,
     y: q2.location.y + q2.size.height,
   };
 
-  return l1.x < l2.x && l1.y < l2.y && r1.x > r2.x && r1.y > r2.y;
+  return l1.x <= l2.x && l1.y <= l2.y && r1.x >= r2.x && r1.y >= r2.y;
 }

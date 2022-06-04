@@ -1,16 +1,9 @@
-import { Box, Point, Size, Unit } from './types';
+import { Box, Children, IQuadTree, Point, Shape, Size, Unit } from './types';
 import { contains, doesFullyContain, intersects } from './utils';
 
-type Children<T> = Readonly<{
-  type: 'leaves';
-  items: Array<Unit<T>>;
-}> | Readonly<{
-  type: 'nodes'
-  // Clockwise: topLeft, topRight, bottomRight, bottomLeft
-  nodes: [QuadTree<T>, QuadTree<T>, QuadTree<T>, QuadTree<T>]
-}>;
+export class QuadTree<T> implements IQuadTree<T> {
+  static MAX_ITEMS: number = 4;
 
-export class QuadTree<T> {
   #container: Box;
   #children: Children<T> = {
     type: 'leaves',
@@ -25,24 +18,21 @@ export class QuadTree<T> {
     return contains(this.#container, point);
   }
 
-  add(item: Unit<T>): void {
-    if (this.contains(item)) {
-      if (this.#children.type === 'leaves' && this.#children.items.length < 4) {
-        this.#children.items.push(item);
-        return;
-      } else if (this.#children.type === 'leaves') {
-        this.#split();
-      } else {
-        this.#addToChild(item);
-      }
+  add(...items: ReadonlyArray<Unit<T>>): void {
+    for (const item of items) {
+      this.#insert(item);
     }
   }
 
-  query(shape: Box): ReadonlyArray<Unit<T>> {
+  query(shape?: Shape): ReadonlyArray<Unit<T>> {
+    if (shape == null) {
+      return this.#getAllItems();
+    }
+
     const result: Array<Unit<T>> = [];
-    
+
     if (doesFullyContain(shape, this.#container)) {
-      result.push(...this.getAllItems());
+      result.push(...this.#getAllItems());
     } else if (intersects(shape, this.#container)) {
       for (const item of this.#getItems()) {
         if (contains(shape, item)) {
@@ -58,11 +48,26 @@ export class QuadTree<T> {
     return result;
   }
 
-  getAllItems(): ReadonlyArray<Unit<T>> {
+  #insert(item: Unit<T>): void {
+    if (this.contains(item)) {
+      if (
+        this.#children.type === 'leaves' &&
+        this.#children.items.length < QuadTree.MAX_ITEMS
+      ) {
+        this.#children.items.push(item);
+      } else if (this.#children.type === 'leaves') {
+        this.#splitAndAddNextItem(item);
+      } else {
+        this.#addToChild(item);
+      }
+    }
+  }
+
+  #getAllItems(): ReadonlyArray<Unit<T>> {
     const result: Array<Unit<T>> = [];
     result.push(...this.#getItems());
     for (const child of this.#getChildNodes()) {
-      result.push(...child.getAllItems());
+      result.push(...child.query());
     }
     return result;
   }
@@ -76,7 +81,7 @@ export class QuadTree<T> {
     }
   }
 
-  #getChildNodes(): ReadonlyArray<QuadTree<T>> {
+  #getChildNodes(): ReadonlyArray<IQuadTree<T>> {
     if (this.#children.type === 'nodes') {
       return this.#children.nodes;
     }
@@ -92,8 +97,8 @@ export class QuadTree<T> {
     return [];
   }
 
-  #split(): void {
-    const items = this.#getItems();
+  #splitAndAddNextItem(item: Unit<T>): void {
+    const items = [...this.#getItems(), item];
     const splitWidth = this.#container.size.width / 2;
     const splitHeight = this.#container.size.height / 2;
     const splitSize: Size = {
@@ -128,18 +133,15 @@ export class QuadTree<T> {
         y: this.#container.location.y + splitHeight,
       },
       size: splitSize,
-    })
+    });
 
     this.#children = {
       type: 'nodes',
-      nodes: [
-        topLeft,
-        topRight,
-        bottomRight,
-        bottomLeft,
-      ]
+      nodes: [topLeft, topRight, bottomRight, bottomLeft],
     };
 
-    items.forEach(item => this.#addToChild(item));
+    for (const item of items) {
+      this.#addToChild(item);
+    }
   }
 }
