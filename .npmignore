@@ -2,12 +2,21 @@
 
 node_modules/
 
-index.html
+.parcel-cache/
 
+# raw ts source
 src/
 
+# test files
 dist/tests/
 
+# example files
 dist/main/example.js
 dist/main/example.js.map
 dist/main/example.d.ts
+
+# dev files
+index.html
+.eslintrc.js
+.parcelrc
+.prettierrc
