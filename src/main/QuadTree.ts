@@ -14,6 +14,18 @@ export class QuadTree<T> implements IQuadTree<T> {
     this.#container = container;
   }
 
+  get values(): ReadonlyArray<Unit<T>> {
+    return this.#children.type === 'leaves' ? this.#children.items : [];
+  }
+
+  get children(): ReadonlyArray<IQuadTree<T>> {
+    return this.#children.type === 'nodes' ? this.#children.nodes : [];
+  }
+
+  get boundary(): Box {
+    return this.#container;
+  }
+
   contains(point: Point): boolean {
     return contains(this.#container, point);
   }
@@ -31,10 +43,15 @@ export class QuadTree<T> implements IQuadTree<T> {
 
     const result: Array<Unit<T>> = [];
 
+    console.log({ shape, container: this.#container });
+    console.log(intersects(shape, this.#container));
+
     if (doesFullyContain(shape, this.#container)) {
       result.push(...this.#getAllItems());
     } else if (intersects(shape, this.#container)) {
+      console.log(this.#getItems());
       for (const item of this.#getItems()) {
+        console.log({ shape, item });
         if (contains(shape, item)) {
           result.push(item);
         }

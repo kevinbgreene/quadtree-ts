@@ -3,7 +3,7 @@ export type Point = Readonly<{
   y: number;
 }>;
 
-export type Unit<T> = Point & Readonly<{ data: T }>;
+export type Unit<T> = Point & Readonly<{ data?: T }>;
 
 export type Size = Readonly<{
   width: number;
@@ -26,6 +26,9 @@ export type Circle = Readonly<{
 export type Shape = Box;
 
 export interface IQuadTree<T> {
+  boundary: Box;
+  values: ReadonlyArray<Unit<T>>;
+  children: ReadonlyArray<IQuadTree<T>>;
   add(...items: ReadonlyArray<Unit<T>>): void;
   query(shape?: Shape): ReadonlyArray<Unit<T>>;
   contains(point: Point): boolean;

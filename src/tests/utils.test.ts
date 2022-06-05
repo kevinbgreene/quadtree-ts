@@ -54,3 +54,29 @@ Assert.equal(
   false,
   'Quadrant should not contain point',
 );
+
+Assert.equal(
+  Utils.intersects(
+    {
+      location: {
+        x: 50,
+        y: 50,
+      },
+      size: {
+        width: 5,
+        height: 5,
+      },
+    },
+    {
+      location: {
+        x: 0,
+        y: 0,
+      },
+      size: {
+        width: 200,
+        height: 200,
+      },
+    },
+  ),
+  true,
+);

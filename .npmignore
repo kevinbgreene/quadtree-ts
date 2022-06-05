@@ -1,0 +1,13 @@
+.DS_Store
+
+node_modules/
+
+index.html
+
+src/
+
+dist/tests/
+
+dist/main/example.js
+dist/main/example.js.map
+dist/main/example.d.ts

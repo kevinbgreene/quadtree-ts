@@ -7,22 +7,6 @@
     <title>Document</title>
   </head>
   <body>
-    <script type="module">
-      import { QuadTree } from './src/main/index.ts';
-      const qt = new QuadTree({
-        location: { x: 0, y: 0 },
-        size: { width: 400, height: 200 },
-      });
-
-      for (let i = 0; i < 100; i++) {
-        qt.add({
-          x: Math.random() * 400,
-          y: Math.random() * 200,
-        });
-      }
-
-      console.log(qt);
-      console.log(qt.query());
-    </script>
+    <script type="module" src="./src/main/example.ts" />
   </body>
 </html>
